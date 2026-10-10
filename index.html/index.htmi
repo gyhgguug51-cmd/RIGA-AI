@@ -1,0 +1,980 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
+
+<title>RIGA AI | دستیار هوشمند</title>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&display=swap');
+
+:root {
+  --bg: #080d1a;
+  --panel: #10182b;
+  --panel2: #151f36;
+  --blue: #5485ff;
+  --cyan: #40d9ff;
+  --text: #f2f5ff;
+  --muted: #8995b1;
+  --border: rgba(255,255,255,.08);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Vazirmatn', Tahoma, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  overflow: hidden;
+}
+
+button, input, textarea {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+/* پس‌زمینه */
+
+.background {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  background:
+    radial-gradient(ellipse at 15% 15%,
+      rgba(49,92,220,.17), transparent 40%),
+    radial-gradient(ellipse at 85% 85%,
+      rgba(22,174,220,.10), transparent 38%),
+    #080d1a;
+}
+
+.glow {
+  position: absolute;
+  width: 300px;
+  height: 300px;
+  border-radius: 50%;
+  filter: blur(100px);
+  opacity: .16;
+  background: #386bff;
+  top: -120px;
+  left: -100px;
+}
+
+/* ساختار اصلی */
+
+.app {
+  height: 100dvh;
+  display: flex;
+  max-width: 1600px;
+  margin: auto;
+}
+
+/* نوار کناری */
+
+.sidebar {
+  width: 270px;
+  flex-shrink: 0;
+  padding: 24px 18px;
+  display: flex;
+  flex-direction: column;
+  background: rgba(13,20,37,.82);
+  border-left: 1px solid var(--border);
+  backdrop-filter: blur(20px);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 5px 5px 28px;
+}
+
+.logo {
+  width: 47px;
+  height: 47px;
+  border-radius: 16px;
+  display: grid;
+  place-items: center;
+  font-size: 23px;
+  font-weight: 800;
+  color: white;
+  background: linear-gradient(135deg,#477cff,#32c8ed);
+  box-shadow: 0 5px 30px rgba(65,122,255,.28);
+}
+
+.brand-name {
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: .4px;
+}
+
+.brand-sub {
+  color: var(--muted);
+  font-size: 11px;
+  margin-top: 2px;
+}
+
+.new-chat {
+  border: 1px solid rgba(92,137,255,.3);
+  background: rgba(70,116,255,.12);
+  color: #b9ccff;
+  border-radius: 14px;
+  padding: 13px;
+  text-align: right;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: .25s;
+}
+
+.new-chat:hover {
+  background: rgba(70,116,255,.24);
+  transform: translateY(-1px);
+}
+
+.side-title {
+  color: #687694;
+  font-size: 11px;
+  margin: 30px 5px 12px;
+}
+
+.history {
+  color: #a5b0c9;
+  font-size: 13px;
+  padding: 12px;
+  border-radius: 11px;
+  transition: .2s;
+}
+
+.history:hover {
+  background: rgba(255,255,255,.05);
+}
+
+.sidebar-bottom {
+  margin-top: auto;
+}
+
+.status-card {
+  border: 1px solid var(--border);
+  background: rgba(255,255,255,.025);
+  padding: 14px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.status-dot {
+  width: 9px;
+  height: 9px;
+  background: #3ce6a1;
+  border-radius: 50%;
+  box-shadow: 0 0 12px rgba(60,230,161,.5);
+}
+
+.status-text {
+  font-size: 12px;
+  color: #b3bfd7;
+}
+
+.status-sub {
+  font-size: 10px;
+  color: #75829e;
+  margin-top: 3px;
+}
+
+/* بخش گفتگو */
+
+.main {
+  min-width: 0;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.topbar {
+  height: 76px;
+  flex-shrink: 0;
+  padding: 0 30px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--border);
+  background: rgba(8,13,26,.4);
+  backdrop-filter: blur(12px);
+}
+
+.top-title {
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.top-subtitle {
+  color: var(--muted);
+  font-size: 11px;
+  margin-top: 4px;
+}
+
+.top-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.icon-btn {
+  width: 39px;
+  height: 39px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: rgba(255,255,255,.035);
+  color: #b7c4df;
+  font-size: 17px;
+}
+
+.icon-btn:hover {
+  background: rgba(255,255,255,.09);
+}
+
+/* پیام‌ها */
+
+.chat {
+  flex: 1;
+  overflow-y: auto;
+  padding: 30px 20px 20px;
+  scroll-behavior: smooth;
+}
+
+.chat-inner {
+  max-width: 800px;
+  width: 100%;
+  margin: auto;
+}
+
+.welcome {
+  text-align: center;
+  padding: 7vh 10px 25px;
+  animation: appear .65s ease;
+}
+
+.hero-logo {
+  width: 85px;
+  height: 85px;
+  border-radius: 28px;
+  display: grid;
+  place-items: center;
+  margin: 0 auto 25px;
+  font-size: 38px;
+  font-weight: 800;
+  background: linear-gradient(135deg,#487aff,#39d4ed);
+  box-shadow:
+    0 0 50px rgba(65,125,255,.18),
+    inset 0 1px 1px rgba(255,255,255,.3);
+  animation: float 4s ease-in-out infinite;
+}
+
+.welcome h1 {
+  font-size: clamp(25px,4vw,37px);
+  font-weight: 800;
+  line-height: 1.8;
+}
+
+.gradient-text {
+  background: linear-gradient(90deg,#70a1ff,#4ee1f1);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.welcome p {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 2.2;
+  max-width: 450px;
+  margin: 10px auto 0;
+}
+
+/* پیشنهادها */
+
+.suggestions {
+  display: grid;
+  grid-template-columns: repeat(2,minmax(0,1fr));
+  gap: 12px;
+  max-width: 610px;
+  margin: 25px auto 30px;
+}
+
+.suggestion {
+  text-align: right;
+  padding: 16px;
+  border: 1px solid var(--border);
+  border-radius: 17px;
+  color: var(--text);
+  background: rgba(255,255,255,.025);
+  transition: .25s;
+}
+
+.suggestion:hover {
+  border-color: rgba(80,139,255,.45);
+  background: rgba(65,112,255,.09);
+  transform: translateY(-3px);
+}
+
+.suggestion-icon {
+  font-size: 20px;
+  margin-bottom: 9px;
+}
+
+.suggestion strong {
+  display: block;
+  font-size: 12px;
+  margin-bottom: 5px;
+}
+
+.suggestion span {
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.8;
+}
+
+/* حباب پیام */
+
+.message {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin: 22px 0;
+  animation: appear .3s ease;
+}
+
+.message.user {
+  flex-direction: row-reverse;
+}
+
+.avatar {
+  width: 37px;
+  height: 37px;
+  border-radius: 13px;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  font-size: 17px;
+  background: linear-gradient(135deg,#427aff,#2cc6e8);
+}
+
+.user .avatar {
+  background: #222d46;
+  font-size: 14px;
+}
+
+.message-content {
+  min-width: 0;
+  max-width: 82%;
+}
+
+.message-name {
+  color: #a8b7d5;
+  font-size: 11px;
+  margin: 0 3px 7px;
+}
+
+.user .message-name {
+  text-align: left;
+}
+
+.bubble {
+  padding: 13px 17px;
+  border: 1px solid var(--border);
+  background: rgba(255,255,255,.045);
+  border-radius: 17px 4px 17px 17px;
+  font-size: 13px;
+  line-height: 2.1;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+
+.user .bubble {
+  background: linear-gradient(
+    135deg,
+    rgba(62,103,221,.24),
+    rgba(51,139,204,.12)
+  );
+  border-color: rgba(92,139,255,.17);
+  border-radius: 4px 17px 17px 17px;
+}
+
+.typing {
+  display: flex;
+  gap: 5px;
+  padding: 7px 3px;
+}
+
+.typing span {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #75a2ff;
+  animation: bounce 1s infinite;
+}
+
+.typing span:nth-child(2) {
+  animation-delay: .15s;
+}
+
+.typing span:nth-child(3) {
+  animation-delay: .3s;
+}
+
+/* کادر ارسال */
+
+.composer-area {
+  flex-shrink: 0;
+  padding: 12px 20px 18px;
+  background: linear-gradient(
+    to top,
+    #080d1a 75%,
+    rgba(8,13,26,.0)
+  );
+}
+
+.composer-wrap {
+  max-width: 800px;
+  margin: auto;
+}
+
+.composer {
+  display: flex;
+  align-items: flex-end;
+  gap: 12px;
+  padding: 13px;
+  border: 1px solid rgba(111,144,209,.2);
+  background: rgba(19,28,48,.91);
+  border-radius: 21px;
+  box-shadow: 0 12px 45px rgba(0,0,0,.16);
+  transition: .25s;
+}
+
+.composer:focus-within {
+  border-color: rgba(85,138,255,.6);
+  box-shadow: 0 0 0 3px rgba(76,122,255,.07);
+}
+
+#messageInput {
+  flex: 1;
+  min-width: 0;
+  max-height: 130px;
+  resize: none;
+  border: none;
+  outline: none;
+  color: var(--text);
+  background: transparent;
+  font-size: 13px;
+  line-height: 1.9;
+  padding: 4px 2px;
+}
+
+#messageInput::placeholder {
+  color: #7784a1;
+}
+
+.send-btn {
+  width: 43px;
+  height: 43px;
+  flex-shrink: 0;
+  border: none;
+  border-radius: 14px;
+  color: white;
+  font-size: 20px;
+  background: linear-gradient(135deg,#507fff,#35c9e8);
+  box-shadow: 0 4px 17px rgba(67,121,255,.22);
+  transition: .2s;
+}
+
+.send-btn:hover {
+  transform: scale(1.05);
+}
+
+.send-btn:disabled {
+  opacity: .45;
+  cursor: not-allowed;
+}
+
+.disclaimer {
+  color: #596783;
+  font-size: 10px;
+  text-align: center;
+  margin-top: 12px;
+}
+
+/* انیمیشن‌ها */
+
+@keyframes appear {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes float {
+  0%,100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+@keyframes bounce {
+  0%,60%,100% { transform: translateY(0); }
+  30% { transform: translateY(-5px); }
+}
+
+/* موبایل */
+
+@media(max-width:700px) {
+  .sidebar {
+    display: none;
+  }
+
+  .topbar {
+    height: 66px;
+    padding: 0 16px;
+  }
+
+  .chat {
+    padding: 15px 13px;
+  }
+
+  .welcome {
+    padding-top: 5vh;
+  }
+
+  .hero-logo {
+    width: 70px;
+    height: 70px;
+    border-radius: 23px;
+    font-size: 31px;
+    margin-bottom: 18px;
+  }
+
+  .welcome p {
+    font-size: 12px;
+  }
+
+  .suggestions {
+    gap: 9px;
+    margin-top: 20px;
+  }
+
+  .suggestion {
+    padding: 12px;
+  }
+
+  .composer-area {
+    padding: 10px 12px 13px;
+  }
+
+  .composer {
+    border-radius: 17px;
+    padding: 10px;
+  }
+
+  .message-content {
+    max-width: 86%;
+  }
+
+  .bubble {
+    font-size: 12px;
+  }
+}
+
+@media(max-height:650px) {
+  .welcome {
+    padding-top: 15px;
+  }
+
+  .hero-logo {
+    width: 60px;
+    height: 60px;
+    margin-bottom: 12px;
+  }
+
+  .suggestions {
+    margin-top: 15px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="background">
+  <div class="glow"></div>
+</div>
+
+<div class="app">
+
+  <aside class="sidebar">
+
+    <div class="brand">
+      <div class="logo">R</div>
+      <div>
+        <div class="brand-name">RIGA AI</div>
+        <div class="brand-sub">دستیار هوشمند شما</div>
+      </div>
+    </div>
+
+    <button class="new-chat" id="newChat">
+      <span>＋</span>
+      گفت‌وگوی جدید
+    </button>
+
+    <div class="side-title">فضای گفت‌وگو</div>
+
+    <div class="history">✦ &nbsp; گفت‌وگوی هوشمند</div>
+    <div class="history">◈ &nbsp; ایده‌های خلاقانه</div>
+    <div class="history">⌘ &nbsp; کمک در برنامه‌نویسی</div>
+
+    <div class="sidebar-bottom">
+      <div class="status-card">
+        <div class="status-dot"></div>
+        <div>
+          <div class="status-text">رابط کاربری فعال است</div>
+          <div class="status-sub">نسخه آزمایشی RIGA AI</div>
+        </div>
+      </div>
+    </div>
+
+  </aside>
+
+  <main class="main">
+
+    <header class="topbar">
+      <div>
+        <div class="top-title">دستیار هوشمند</div>
+        <div class="top-subtitle">RIGA AI · فضای شخصی شما</div>
+      </div>
+
+      <div class="top-actions">
+        <button class="icon-btn"
+                id="clearChat"
+                title="پاک کردن گفتگو">↻</button>
+        <button class="icon-btn"
+                id="aboutBtn"
+                title="درباره برنامه">ⓘ</button>
+      </div>
+    </header>
+
+    <section class="chat" id="chat">
+      <div class="chat-inner" id="chatInner">
+
+        <div class="welcome" id="welcome">
+
+          <div class="hero-logo">R</div>
+
+          <h1>
+            سلام! به <span class="gradient-text">RIGA AI</span>
+            خوش آمدی
+          </h1>
+
+          <p>
+            من دستیار گفت‌وگویی تو هستم.
+            از یک سؤال ساده تا ایده‌های خلاقانه،
+            می‌توانیم اینجا شروع کنیم.
+          </p>
+
+          <div class="suggestions">
+
+            <button class="suggestion"
+                    data-prompt="یک ایده خلاقانه برای من پیشنهاد بده">
+              <div class="suggestion-icon">💡</div>
+              <strong>ایده‌های خلاقانه</strong>
+              <span>یک ایده جذاب و متفاوت پیدا کنیم.</span>
+            </button>
+
+            <button class="suggestion"
+                    data-prompt="در برنامه‌نویسی به من کمک کن">
+              <div class="suggestion-icon">💻</div>
+              <strong>برنامه‌نویسی</strong>
+              <span>در نوشتن و اصلاح کد کمکم کن.</span>
+            </button>
+
+            <button class="suggestion"
+                    data-prompt="یک متن زیبا و حرفه‌ای برای من بنویس">
+              <div class="suggestion-icon">✍️</div>
+              <strong>نوشتن متن</strong>
+              <span>متن‌های زیبا و حرفه‌ای بسازیم.</span>
+            </button>
+
+            <button class="suggestion"
+                    data-prompt="چند راه برای یادگیری بهتر معرفی کن">
+              <div class="suggestion-icon">🚀</div>
+              <strong>یادگیری و رشد</strong>
+              <span>مهارت‌های جدید یاد بگیریم.</span>
+            </button>
+
+          </div>
+        </div>
+
+        <div id="messages"></div>
+
+      </div>
+    </section>
+
+    <footer class="composer-area">
+      <div class="composer-wrap">
+
+        <form class="composer" id="chatForm">
+
+          <textarea
+            id="messageInput"
+            rows="1"
+            placeholder="پیامت را برای RIGA AI بنویس..."
+            aria-label="متن پیام"></textarea>
+
+          <button class="send-btn"
+                  type="submit"
+                  id="sendBtn"
+                  aria-label="ارسال پیام">➤</button>
+
+        </form>
+
+        <div class="disclaimer">
+          RIGA AI · نسخه آزمایشی · پاسخ‌ها هنوز به موتور
+          هوش مصنوعی واقعی متصل نیستند.
+        </div>
+      </div>
+    </footer>
+
+  </main>
+
+</div>
+
+<script>
+const form = document.getElementById('chatForm');
+const input = document.getElementById('messageInput');
+const messages = document.getElementById('messages');
+const welcome = document.getElementById('welcome');
+const chat = document.getElementById('chat');
+const sendBtn = document.getElementById('sendBtn');
+
+function addMessage(text, type) {
+  const row = document.createElement('div');
+  row.className = 'message ' + type;
+
+  const avatar = document.createElement('div');
+  avatar.className = 'avatar';
+  avatar.textContent = type === 'user' ? 'شما' : 'R';
+
+  const content = document.createElement('div');
+  content.className = 'message-content';
+
+  const name = document.createElement('div');
+  name.className = 'message-name';
+  name.textContent = type === 'user' ? 'شما' : 'RIGA AI';
+
+  const bubble = document.createElement('div');
+  bubble.className = 'bubble';
+  bubble.textContent = text;
+
+  content.append(name, bubble);
+  row.append(avatar, content);
+  messages.appendChild(row);
+
+  chat.scrollTop = chat.scrollHeight;
+
+  return row;
+}
+
+function reply(text) {
+    const t = text.toLowerCase();
+
+    if (
+        t.includes('سازنده') ||
+        t.includes('ساخته') ||
+        t.includes('طراح') ||
+        t.includes('متنا') ||
+        t.includes('مهدی رحیمی') ||
+        t.includes('کی ساخت') ||
+        t.includes('چه کسی')
+    ) {
+        return 'RIGA AI توسط تیم متنا لردگان ساخته شده است و طراح آن مهدی رحیمی است. 💙';
+    }
+
+    if (t.includes('سلام')) {
+        return 'سلام! من RIGA AI هستم. چطور می‌توانم کمکت کنم؟ 💙';
+    }
+
+    return 'سؤالت را متوجه شدم. لطفاً کمی دقیق‌تر توضیح بده تا بهتر راهنمایی‌ات کنم.';
+}
+
+    if (/سلام|نامت|اسم تو/.test(t)) {
+        return 'سلام! من RIGA AI هستم؛ دستیار گفت‌وگویی شما 💙';
+    }
+
+    return 'لطفاً سؤالت را واضح‌تر بپرس تا بهتر راهنمایی‌ات کنم.';
+}
+  if (/اسمت|نامت|اسم تو/.test(t)) {
+    return 'من ریگا (RIGA AI) هستم؛ دستیار گفت‌وگویی شما. 💙';
+  }
+
+
+  if (/پشتیبانی|ایمیل/.test(t)) {
+    return 'ایمیل پشتیبانی:\ngyhgguug51@gmail.com';
+  }
+
+  if (/خوبی|حالت چطوره/.test(t)) {
+    return 'ممنون که پرسیدی! 😊\n' +
+      'من آماده‌ام با هم گفت‌وگو کنیم.';
+  }
+
+  if (/سلام|درود|صبح بخیر|شب بخیر/.test(t)) {
+    return 'سلام! 💙 به RIGA AI خوش آمدی.\n' +
+      'چطور می‌توانم کمکت کنم؟';
+  }
+
+  return 'پیامت را دریافت کردم! 💙\n\n' +
+    'این نسخه از RIGA AI هنوز به موتور هوش مصنوعی ' +
+    'واقعی متصل نشده است؛ بنابراین فعلاً فقط پاسخ‌های ' +
+    'از پیش تعیین‌شده ارائه می‌دهد.\n\n' +
+    'برای پاسخ‌گویی هوشمند به سؤال‌های مختلف، باید ' +
+    'در مرحله بعد یک سرویس هوش مصنوعی را به‌صورت ' +
+    'امن به برنامه متصل کنیم. ✨';
+}
+
+function showTyping() {
+  const row = document.createElement('div');
+  row.className = 'message bot';
+
+  row.innerHTML = `
+    <div class="avatar">R</div>
+    <div class="message-content">
+      <div class="message-name">RIGA AI</div>
+      <div class="bubble">
+        <div class="typing">
+          <span></span><span></span><span></span>
+        </div>
+      </div>
+    </div>
+  `;
+
+  messages.appendChild(row);
+  chat.scrollTop = chat.scrollHeight;
+
+  return row;
+}
+
+async function sendMessage(text) {
+    text = text.trim();
+    if (!text) return;
+
+    welcome.style.display = 'none';
+    addMessage(text, 'user');
+
+    input.value = '';
+    input.style.height = 'auto';
+    sendBtn.disabled = true;
+
+    const typing = showTyping();
+
+    try {
+        const response = await fetch('/api/chat', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                message: text
+            })
+        });
+
+        const data = await response.json();
+
+        typing.remove();
+
+        if (!response.ok) {
+            throw new Error(data.error || 'خطا در دریافت پاسخ');
+        }
+
+        addMessage(data.reply, 'bot');
+
+    } catch (error) {
+        typing.remove();
+        addMessage(
+            'خطا در اتصال به هوش مصنوعی: ' + error.message,
+            'bot'
+        );
+        console.error(error);
+    } finally {
+        sendBtn.disabled = false;
+        input.focus();
+    }
+}
+
+form.addEventListener('submit', function(e) {
+  e.preventDefault();
+  sendMessage(input.value);
+});
+
+input.addEventListener('input', function() {
+  this.style.height = 'auto';
+  this.style.height =
+    Math.min(this.scrollHeight, 130) + 'px';
+});
+
+input.addEventListener('keydown', function(e) {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    form.requestSubmit();
+  }
+});
+
+document.querySelectorAll('[data-prompt]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    sendMessage(btn.dataset.prompt);
+  });
+});
+
+function resetChat() {
+  messages.replaceChildren();
+  welcome.style.display = '';
+  input.value = '';
+  input.style.height = 'auto';
+  chat.scrollTop = 0;
+  input.focus();
+}
+
+document.getElementById('newChat').addEventListener(
+  'click', resetChat
+);
+
+document.getElementById('clearChat').addEventListener(
+  'click', resetChat
+);
+
+document.getElementById('aboutBtn').addEventListener(
+  'click', () => {
+    alert(
+      'RIGA AI 💙\n\n' +
+      'دستیار گفت‌وگویی شما\n' +
+      'نسخه آزمایشی رابط کاربری\n\n' +
+      'این نسخه هنوز به موتور هوش مصنوعی واقعی متصل نیست.'
+    );
+  }
+);
+</script>
+
+</body>
+</html>
